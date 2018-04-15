@@ -3,9 +3,9 @@ import pytz
 import datetime
 
 
-def get_load_data_api(url):
+def get_load_data_api(url, **kwargs):
     try:
-        response = requests.get(url)
+        response = requests.get(url, data=kwargs)
     except requests.exceptions.ConnectionError:
         return None
     if response.ok:
@@ -13,18 +13,18 @@ def get_load_data_api(url):
 
 
 def get_number_of_pages(url):
-    page = 1
-    content = get_load_data_api(url.format(page))
+    content = get_load_data_api(url, data={'page':1})
     if content:
         return content['number_of_pages']
 
 
 def load_attempts(url, number_of_pages):
     for page in range(1, number_of_pages+1):
-        content = get_load_data_api(url.format(page))
+        content = get_load_data_api(url, page=page)
         if content:
             for attempt in content['records']:
                 yield attempt
+
         else:
             continue
 
@@ -48,7 +48,7 @@ def print_midnighters(midnighters):
 
 
 if __name__ == '__main__':
-    url = 'http://devman.org/api/challenges/solution_attempts/?page={}'
+    url = 'http://devman.org/api/challenges/solution_attempts/'
     number_of_pages = get_number_of_pages(url) or exit('Can not load content!')
     midnighters = []
     for attempt in load_attempts(url, number_of_pages):

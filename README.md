@@ -1,7 +1,6 @@
 # Night Owls Detector
 
 
-124/5000
 The script prints users of [devman.org](https://devman.org), sending 
 tasks to check after 24:00 local time for the user.
 # Get started:
